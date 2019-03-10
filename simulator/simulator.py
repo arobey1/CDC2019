@@ -2,7 +2,6 @@
 
 import matplotlib.pyplot as plt
 import matplotlib.patches as patch
-from planner.planner import Planner
 import agent
 
 class Simulator(object):
@@ -11,7 +10,6 @@ class Simulator(object):
         self.agents = agents
         self.height = height
         self.width = width
-        self.planner = Planner()
 
         # Plotting
         self.fig = plt.figure(1)
