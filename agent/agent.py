@@ -11,7 +11,9 @@ class Agent(object):
         # Action Space
         self.actions = {'up': (0, 1), 'down': (0, -1),
                         'left': (-1, 0), 'right': (1, 0), 'stay': (0, 0)}
-        self.next_action = 'up'
+
+        self.next_action = 'stay'
+        # self.next_action = 'up'  # To Move Up, uncomment this
 
         # Observation Model
         self.observation_model = ObservationModel(int(radius/2), res=1)

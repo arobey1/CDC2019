@@ -33,6 +33,7 @@ if __name__ == "__main__":
 
         # Plan
         planner.plan(agents, n_iters=10)
+        print('Current Coverage is :', planner.compute_cost(agents))
         # Actuate
         sim.simulate()
 
