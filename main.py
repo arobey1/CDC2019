@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from planner.planner import Planner
 
 np.random.seed(2)
-sim_steps = 1
+sim_steps = 9
 n_agents = 5
 radius = 2
 height = 10

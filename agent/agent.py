@@ -11,7 +11,7 @@ class Agent(object):
         # Action Space
         self.actions = {'up': (0, 1), 'down': (0, -1),
                         'left': (-1, 0), 'right': (1, 0), 'stay': (0, 0)}
-        self.next_action = 'stay'
+        self.next_action = 'up'
 
         # Observation Model
         self.observation_model = ObservationModel(int(radius/2), res=1)
@@ -62,7 +62,17 @@ class Agent(object):
         # Update the Center of the Observable Square
         center = self.motion_model(self.state, [-self.radius/2, -self.radius/2])
         self.patch.xy = center
-        # Update the
+        # Update the observed points drawing.
+        obs_points = self.observation_model.get_observed_points(self.state)
+        for obs_point, patch in zip(obs_points, self.obs_patches):
+            patch.xy = obs_point
+        # self.obs_patches = [patch.Rectangle(xy=point, width=0.1, height=0.1, color='k') for point in obs_points]
 
     def motion_model(self, state, action):
+        '''
+        Applies the motion model x_{t+1} = x_t + u_t, i.e. a discrete time control-additive motion model.
+        :param state: The current state at time t.
+        :param action: The current action at time t.
+        :return: The resulting state x_{t+1}
+        '''
         return state[0] + action[0], state[1] + action[1]
