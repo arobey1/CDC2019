@@ -5,8 +5,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from planner.planner import Planner
 
-
-sim_steps = 5
+np.random.seed(2)
+sim_steps = 1
 n_agents = 5
 radius = 2
 height = 10
@@ -35,3 +35,5 @@ if __name__ == "__main__":
         planner.plan(agents, n_iters=10)
         # Actuate
         sim.simulate()
+
+    plt.pause(1000)

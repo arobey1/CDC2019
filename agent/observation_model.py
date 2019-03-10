@@ -11,7 +11,7 @@ class ObservationModel(object):
         Constructs the Model.
         :param range: Assumes a square observable area with width and height given by range.
         '''
-        self.points = [point for point in itertools.product(range(-radius,radius,res), range(-radius,radius,res))]
+        self.points = [point for point in itertools.product(range(-radius, radius+1, res), range(-radius,radius+1,res))]
 
     def get_observed_points(self, state):
         '''

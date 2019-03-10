@@ -33,6 +33,7 @@ class Simulator(object):
     def draw(self):
         for agent in self.agents:
             self.ax.add_patch(agent.patch)
+            [self.ax.add_patch(obs_point) for obs_point in agent.obs_patches]
 
         self.ax.set_xlim([0, self.width])
         self.ax.set_ylim([0, self.height])
