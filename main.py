@@ -6,9 +6,9 @@ import matplotlib.pyplot as plt
 from planner.planner import Planner
 
 np.random.seed(2)
-sim_steps = 1
+sim_steps = 2
 n_agents = 5
-radius = 2
+radius = 4
 height = 10
 width = 10
 colors = ['b', 'g', 'y', 'r', 'c', 'k']

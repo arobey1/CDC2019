@@ -62,7 +62,7 @@ class Planner(object):
 
         for t in range(1, n_iters + 1):
             for idx, agent in enumerate(agents):
-                v_i = self.approximate_grad(Y_init[idx], agents, batch_size=50)
+                v_i = self.approximate_grad(Y_init[idx], agents, batch_size=25)
                 v_ip = self.project_P(v_i, agent_idx=idx, n_actions=n_actions, zero_others=True)
                 # Average over other agents
                 y_avg = np.average(np.array(Y_init), axis=0)
