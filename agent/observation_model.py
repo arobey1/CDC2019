@@ -6,7 +6,7 @@ class ObservationModel(object):
     The ObservationModel class models the observable area in an area coverage problem.
     '''
 
-    def __init__(self, radius=1, res=1):
+    def __init__(self, radius=1, res=1, height=10, width=10):
         '''
         Constructs the Model.
         :param range: Assumes a square observable area with width and height given by range.
@@ -19,6 +19,7 @@ class ObservationModel(object):
         :param state: The state observing from.
         :return: The set of observed points.
         '''
+        # TODO Make this return a set of observed points that excludes any points which are not in the valid map area.
         return set([self.motion_model(state, point) for point in self.points])
 
     def motion_model(self, state, action):
