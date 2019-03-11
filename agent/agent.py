@@ -13,7 +13,8 @@ class Agent(object):
                         'left': (-1, 0), 'right': (1, 0)}
 
         self.next_action = 'stay'
-        # self.next_action = 'up'  # To Move Up, uncomment this
+        self.n_actions = len(self.actions)
+
 
         # Observation Model
         self.observation_model = ObservationModel(int(radius/2), res=1)

@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from planner.planner import Planner
 
 np.random.seed(2)
-sim_steps = 9
+sim_steps = 1
 n_agents = 5
 radius = 2
 height = 10
@@ -26,17 +26,19 @@ if __name__ == "__main__":
     sim = Simulator(agents=agents, height=height, width=width)
     planner = Planner()
 
+    print('Current Coverage is :', planner.compute_cost(agents))
     for t in range(0, sim_steps):
         # Draw
         sim.draw()
         plt.pause(0.5)
 
         # Plan
-        # planner.plan(agents, n_iters=10)
-        planner.plan_sga(agents)
+        planner.plan(agents, n_iters=10)
+        # planner.plan_sga(agents)
 
-        print('Current Coverage is :', planner.compute_cost(agents))
         # Actuate
         sim.simulate()
+
+        print('Current Coverage is :', planner.compute_cost(agents))
 
     plt.pause(1000)
