@@ -32,7 +32,9 @@ if __name__ == "__main__":
         plt.pause(0.5)
 
         # Plan
-        planner.plan(agents, n_iters=10)
+        # planner.plan(agents, n_iters=10)
+        planner.plan_sga(agents)
+
         print('Current Coverage is :', planner.compute_cost(agents))
         # Actuate
         sim.simulate()

@@ -9,8 +9,8 @@ class Agent(object):
         self.radius = radius
 
         # Action Space
-        self.actions = {'up': (0, 1), 'down': (0, -1),
-                        'left': (-1, 0), 'right': (1, 0), 'stay': (0, 0)}
+        self.actions = {'stay': (0, 0), 'up': (0, 1), 'down': (0, -1),
+                        'left': (-1, 0), 'right': (1, 0)}
 
         self.next_action = 'stay'
         # self.next_action = 'up'  # To Move Up, uncomment this
@@ -30,7 +30,7 @@ class Agent(object):
         Returns possible subsequent states along each valid action, given the current state.
         :return: The list of subequent states.
         """
-        return [(self.motion_model(self.state, action), action) for name, action in self.actions.items()]
+        return [(self.motion_model(self.state, action), name) for name, action in self.actions.items()]
 
     def get_observations(self, state):
         """
