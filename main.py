@@ -4,42 +4,60 @@ from simulator.simulator import Simulator
 import numpy as np
 import matplotlib.pyplot as plt
 from planner.planner import Planner
+import time
 
-np.random.seed(1)
-sim_steps = 10
-n_agents = 10
-radius = 3
-height = 10
-width = 10
-colors = ['b', 'g', 'y', 'r', 'c', 'k']
+SIM_STEPS = 5
+N_AGENTS = 10
+WIDTH = 10
+HEIGHT = 10
+RADIUS = 2
+T = 3
+
+# np.random.seed(1)
+
+def main():
+    for rnd_seed in range(1, 5):
+        np.random.seed(rnd_seed)
+        coverage = trial()
+        print(coverage)
+        plt.plot(range(SIM_STEPS+1), coverage)
+
+    plt.show()
+    plt.pause(1000)
+
+
+
+
+def trial():
+    agents = [create_agent() for i in range(0, N_AGENTS)]
+    sim = Simulator(agents=agents, height=HEIGHT, width=WIDTH)
+    planner = Planner()
+
+    start_time = time.time()
+    print('Current Coverage is :', planner.compute_cost(agents))
+    coverage = [planner.compute_cost(agents)]
+    for t in range(0, SIM_STEPS):
+        # sim.draw()
+        # plt.pause(0.5)
+
+        planner.plan(agents, n_iters=T)
+        # planner.plan_sga(agents)
+
+        sim.simulate()
+        print('Current Coverage is :', planner.compute_cost(agents))
+        coverage.append(planner.compute_cost(agents))
+
+    print('Simulation time: ', time.time() - start_time)
+    # plt.pause(1000)
+
+    return coverage
+
 
 def create_agent():
-    height_list = range(0, height)
-    width_list = range(0, width)
-    x = np.random.choice(height_list)
-    y = np.random.choice(width_list)
-    # return Agent(state=(x, y), radius=radius, color=colors.pop(0))
-    return Agent(state=(x, y), radius=radius, color=np.random.rand(3))
+    x = np.random.choice(range(0, HEIGHT))
+    y = np.random.choice(range(0, WIDTH))
+    return Agent(state=(x, y), radius=RADIUS, color=np.random.rand(3))
 
 
 if __name__ == "__main__":
-    agents = [create_agent() for i in range(0, n_agents)]
-    sim = Simulator(agents=agents, height=height, width=width)
-    planner = Planner()
-
-    print('Current Coverage is :', planner.compute_cost(agents))
-    for t in range(0, sim_steps):
-        # Draw
-        sim.draw()
-        plt.pause(0.5)
-
-        # Plan
-        planner.plan(agents, n_iters=10)
-        # planner.plan_sga(agents)
-
-        # Actuate
-        sim.simulate()
-
-        print('Current Coverage is :', planner.compute_cost(agents))
-
-    plt.pause(1000)
+    main()

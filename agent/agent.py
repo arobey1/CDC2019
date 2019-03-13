@@ -23,7 +23,7 @@ class Agent(object):
         self.color = color
         center = self.motion_model(self.state, [-self.radius/2, -self.radius/2])
         self.patch = patch.Rectangle(xy=center, width=self.radius, height=self.radius, color=self.color)
-        obs_points = self.observation_model.get_observed_points(self.state)
+        obs_points = self.observation_model.get_observed_points(self.state, return_all=True)
         self.obs_patches = [patch.Rectangle(xy=point, width=0.1, height=0.1, color='k') for point in obs_points]
 
     def get_successors(self):
@@ -65,6 +65,7 @@ class Agent(object):
         # Update the Center of the Observable Square
         center = self.motion_model(self.state, [-self.radius/2, -self.radius/2])
         self.patch.xy = center
+
         # Update the observed points drawing.
         obs_points = self.observation_model.get_observed_points(self.state)
         for obs_point, patch in zip(obs_points, self.obs_patches):
