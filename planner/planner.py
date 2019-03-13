@@ -38,22 +38,15 @@ class Planner(object):
             observed_points = observed_points.union(best_set)
             agent.set_next_action(best_action)
 
-    def plan(self, agents, n_iters=10, batch_size=100, radius=3):
+    def plan(self, agents, n_iters=10, batch_size=10, radius=3):
         """
         Chooses actions for each agent according to Decentralized Continuous Greedy (DCG).
         :param agents: The set of agents.
-        :param n_iters: The number of gradient steps.
+        :param n_iters: The number of gradient steps (denoted by T in DCG).
         :param radius: The communication radius of each agent. Determines the neighbor sets.
         :return: None
         """
-        for agent in agents:
-            successors = agent.get_successors()
-            for succ, action in successors:
-                pass
-                # print('Agent has succ:', succ)
-                # print('With Observatons: ', agent.get_observations(succ))
 
-        # TODO Implement DCG Here:
         # Initialize Y vectors
         n_agents = len(agents)
         n_actions = agents[0].n_actions
@@ -64,6 +57,7 @@ class Planner(object):
             for idx, agent in enumerate(agents):
                 v_i = self.approximate_grad(Y_init[idx], agents, batch_size=25)
                 v_ip = self.project_P(v_i, agent_idx=idx, n_actions=n_actions, zero_others=True)
+
                 # Average over other agents
                 y_avg = np.average(np.array(Y_init), axis=0)
                 Y_init[idx] = self.project_P(y_avg + 1.0 / t * v_ip, agent_idx=idx, n_actions=n_actions)
@@ -71,9 +65,9 @@ class Planner(object):
                 # Y_init[idx] = (1-1.0/n_iters) * y_avg + 1.0 / n_iters * v_ip
                 # print('At iteration ', t, 'For agent', idx, 'Y = ', Y_init[idx])
 
-        print('Agent 0 actions: ', Y_init[0])
-        print('Agent 1 actions: ', Y_init[1])
-        print('Agent 0-1 Diff: ', Y_init[0] - Y_init[1])
+        # print('Agent 0 actions: ', Y_init[0])
+        # print('Agent 1 actions: ', Y_init[1])
+        # print('Agent 0-1 Diff: ', Y_init[0] - Y_init[1])
 
         # Assign the best actions by Argmax
         for idx, agent in enumerate(agents):
@@ -82,12 +76,6 @@ class Planner(object):
                 if action_idx == best_action_idx:
                     agent.set_next_action(succ_act[1])
 
-        # n_actions = agents[0].n_actions
-        # x = np.ones(n_actions * len(agents)) * 0.5
-        # gradient = self.approximate_grad(x, agents)
-        # gradient_p = self.project_P(gradient, 0, n_actions=5)
-        # print('Gradient = ', gradient)
-        # print('Projection = ', gradient_p)
 
     def approximate_grad(self, x, agents, batch_size=100):
         """

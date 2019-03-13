@@ -5,10 +5,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 from planner.planner import Planner
 
-np.random.seed(2)
-sim_steps = 2
-n_agents = 5
-radius = 4
+np.random.seed(1)
+sim_steps = 10
+n_agents = 10
+radius = 3
 height = 10
 width = 10
 colors = ['b', 'g', 'y', 'r', 'c', 'k']
@@ -18,7 +18,8 @@ def create_agent():
     width_list = range(0, width)
     x = np.random.choice(height_list)
     y = np.random.choice(width_list)
-    return Agent(state=(x, y), radius=radius, color=colors.pop(0))
+    # return Agent(state=(x, y), radius=radius, color=colors.pop(0))
+    return Agent(state=(x, y), radius=radius, color=np.random.rand(3))
 
 
 if __name__ == "__main__":
