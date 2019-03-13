@@ -1,5 +1,7 @@
 import numpy as np
-
+import time
+from joblib import Parallel, delayed
+import multiprocessing
 
 class Planner(object):
 
@@ -54,21 +56,18 @@ class Planner(object):
         Y_init = [y_init] * n_agents
 
         for t in range(1, n_iters + 1):
-            print('Time step t = ', t)
+            t1 = time.time()
             for idx, agent in enumerate(agents):
-                v_i = self.approximate_grad(Y_init[idx], agents, batch_size=25)
+
+                # approximating the gradient takes by orders of magnitude the most time
+                v_i = self.approximate_grad(Y_init[idx], agents, batch_size=10)
+
                 v_ip = self.project_P(v_i, agent_idx=idx, n_actions=n_actions, zero_others=True)
 
                 # Average over other agents
                 y_avg = np.average(np.array(Y_init), axis=0)
                 Y_init[idx] = self.project_P(y_avg + 1.0 / t * v_ip, agent_idx=idx, n_actions=n_actions)
 
-                # Y_init[idx] = (1-1.0/n_iters) * y_avg + 1.0 / n_iters * v_ip
-                # print('At iteration ', t, 'For agent', idx, 'Y = ', Y_init[idx])
-
-        # print('Agent 0 actions: ', Y_init[0])
-        # print('Agent 1 actions: ', Y_init[1])
-        # print('Agent 0-1 Diff: ', Y_init[0] - Y_init[1])
 
         # Assign the best actions by Argmax
         for idx, agent in enumerate(agents):
@@ -86,21 +85,57 @@ class Planner(object):
         :param batch_size: The batch size.
         :return: The approximate gradient.
         """
+
         grad = np.zeros_like(x)
         for t in range(0, batch_size):
+
             # Sample according to x/ \|x \|.
-            x_norm = x  # / np.sum(x)
-            sample = np.random.binomial(n=1, p=x_norm)  # TODO Ensure that x is a valid PDF
+            sample = np.random.binomial(n=1, p=x)  # TODO Ensure that x is a valid PDF
             grad_t = np.zeros_like(x)
+
             for i in range(0, grad_t.shape[0]):
+
                 sample_c = sample.copy()
+
                 sample_c[i] = 1
                 cost_plus = self.check_cost(sample_c, agents)
+
                 sample_c[i] = 0
                 cost_minus = self.check_cost(sample_c, agents)
+
                 grad_t[i] = cost_plus - cost_minus
+
             grad = grad + grad_t
+
         return grad / batch_size
+
+    def parallel_approximate_grad(self, x, agents, batch_size=100):
+
+        num_cores = multiprocessing.cpu_count()
+        grad_ts = Parallel(n_jobs=num_cores, verbose=10)(delayed(self.single_grad_step)(x, agents) for i in range(batch_size))
+        return sum(grad_ts) / batch_size
+
+
+    def single_grad_step(self, x, agents):
+
+        sample = np.random.binomial(n=1, p=x)  # TODO Ensure that x is a valid PDF
+        grad_t = np.zeros_like(x)
+
+        for i in range(0, grad_t.shape[0]):
+
+            sample_c = sample.copy()
+
+            sample_c[i] = 1
+            cost_plus = self.check_cost(sample_c, agents)
+
+            sample_c[i] = 0
+            cost_minus = self.check_cost(sample_c, agents)
+
+            grad_t[i] = cost_plus - cost_minus
+
+        return grad_t
+
+
 
     def check_cost(self, x, agents):
         observed_points = set()
