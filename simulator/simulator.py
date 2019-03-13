@@ -1,5 +1,3 @@
-
-
 import matplotlib.pyplot as plt
 import matplotlib.patches as patch
 import agent
@@ -35,10 +33,9 @@ class Simulator(object):
             self.ax.add_patch(agent.patch)
             [self.ax.add_patch(obs_point) for obs_point in agent.obs_patches]
 
-        self.ax.set_xlim([0, self.width])
-        self.ax.set_ylim([0, self.height])
+        self.ax.set_xlim([0, self.width+0.5])
+        self.ax.set_ylim([0, self.height+0.5])
 
         self.ax.set_title('Multi-Agent Coverage')
         self.ax.set_xlabel('X (m)')
         self.ax.set_ylabel('Y (m)')
-
