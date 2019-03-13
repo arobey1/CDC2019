@@ -54,6 +54,7 @@ class Planner(object):
         Y_init = [y_init] * n_agents
 
         for t in range(1, n_iters + 1):
+            print('Time step t = ', t)
             for idx, agent in enumerate(agents):
                 v_i = self.approximate_grad(Y_init[idx], agents, batch_size=25)
                 v_ip = self.project_P(v_i, agent_idx=idx, n_actions=n_actions, zero_others=True)

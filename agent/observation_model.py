@@ -14,10 +14,10 @@ class ObservationModel(object):
         self.height = height
         self.width = width
         self.res = res
-        self.valid_grid_points = [pt for pt in itertools.product(range(0, self.width+1, self.res), range(0, self.height+1, self.res))]
+        self.valid_grid_points = set([pt for pt in itertools.product(range(0, self.width+1, self.res), range(0, self.height+1, self.res))])
         self.points = [point for point in itertools.product(range(-radius, radius+1, res), range(-radius,radius+1,res))]
 
-    def get_observed_points(self, state):
+    def get_observed_points(self, state, return_all=False):
         '''
         Given an input state, returns the observed points.
         :param state: The state observing from.
@@ -25,8 +25,10 @@ class ObservationModel(object):
         '''
         # TODO Make this return a set of observed points that excludes any points which are not in the valid map area.
         all_obs_pts = set([self.motion_model(state, point) for point in self.points])
-        obs_pts = set([pt for pt in all_obs_pts if pt in self.valid_grid_points])
-        return obs_pts
+        
+        if return_all:
+            return all_obs_pts
+        return all_obs_pts.intersection(self.valid_grid_points)
 
     def motion_model(self, state, action):
         return state[0] + action[0], state[1] + action[1]
